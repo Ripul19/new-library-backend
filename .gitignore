@@ -1,0 +1,5 @@
+
+package-lock.json
+.env
+database.log
+node_modules
