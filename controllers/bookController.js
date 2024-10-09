@@ -112,7 +112,7 @@ exports.borrowBook = async (req, res) => {
         const user = await User.findByPk(userId);
         if (!user) return res.status(404).json({ error: 'User not found' });
         
-        const bookHistory = await BorrowHistory.create({ bookId, userId, status: 'BORROWED', success:true }); //validation error
+        const bookHistory = await BorrowHistory.create({ bookId, userId, status: 'BORROWED', success: true }); //validation error
         
         book.status= 'BORROWED';
         await book.save();
