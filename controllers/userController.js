@@ -162,9 +162,22 @@ exports.getAllDeletedMembers = async (req, res) => {
 exports.getMemberById = async (req, res) => {
     try {
         const { userId } = req.params;
+        // const user = await User.findByPk(userId, {
+        //     where : { role: 'MEMBER' },
+        //     attributes: { exclude: ['password', 'updatedAt'] }
+        // });
         const user = await User.findByPk(userId, {
-            where : { role: 'MEMBER' },
-            attributes: { exclude: ['password', 'updatedAt'] }
+            attributes: { exclude: ['password', 'updatedAt'] },
+            include: [{
+                model: BorrowHistory,
+                as: 'borrowHistory',
+                attributes: ['id', 'bookId', 'borrowDate', 'returnDate', 'status'],
+                include: [{
+                    model: Book,
+                    as: 'book',
+                    attributes: ['id', 'title', 'author']
+                }]
+            }]
         });
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
