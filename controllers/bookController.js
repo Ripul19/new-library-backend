@@ -112,7 +112,7 @@ exports.borrowBook = async (req, res) => {
         const user = await User.findByPk(userId);
         if (!user) return res.status(404).json({ error: 'User not found' });
         
-        const bookHistory = await BorrowHistory.create({ bookId, userId, status: 'BORROWED' }); //validation error
+        const bookHistory = await BorrowHistory.create({ bookId, userId, status: 'BORROWED', success:true }); //validation error
         
         book.status= 'BORROWED';
         await book.save();
@@ -155,7 +155,7 @@ exports.returnBook = async (req, res) => {
         book.status= 'AVAILABLE';
         await book.save();
 
-        return res.status(200).json({ message: 'Book Returned Successfully', history });
+        return res.status(200).json({ message: 'Book Returned Successfully', history, success: true });
     }
     catch (error) {
         return res.status(500).json({ error: error.message });
