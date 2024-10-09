@@ -30,7 +30,7 @@ exports.updateBook = async (req, res) => {
         book.title = title;
         book.author = author;
         await book.save();
-        return res.status(200).json(book);
+        return res.status(200).json({ book, success:true });
     } 
     catch (error) {
         return res.status(500).json({ error: error.message });
