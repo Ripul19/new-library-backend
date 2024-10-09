@@ -210,14 +210,22 @@ exports.updateMember = async (req, res) => {
         }
 
         if (username) {
+            const existUsername = await User.findOne({ where: { username }});
+            if(existUsername) return res.status(400).json({message: "Username already taken"});
+
             user.username = username;
         }
         if (email) {
+            const existEmail = await User.findOne({ where: { email }});
+            if(existEmail) return res.status(400).json({message: "Email already taken"});
+
             user.email = email;
         }
 
         await user.save();
-        return res.status(200).json({ message: 'User updated successfully', user });
+        const userData = user.get({ plain: true });
+        delete userData.password;
+        return res.status(200).json({ message: 'User updated successfully', userData });
     }
     catch (error) {
         console.error(error);
