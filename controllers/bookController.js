@@ -8,10 +8,10 @@ exports.addBook = async (req, res) => {
     try {
         const { title, author } = req.body;
         const newBook = await Book.create({ title, author });
-        res.status(201).json({newBook, success: true});
+        return res.status(201).json({newBook, success: true});
     } 
     catch (error) {
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 };
 
