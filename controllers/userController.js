@@ -275,7 +275,7 @@ exports.deleteSelf = async (req, res) => {
         user.status = 'INACTIVE';
         await user.save();
 
-        return res.status(200).json({ message: 'User deleted successfully' });
+        return res.status(200).json({ success: true, message: 'User deleted successfully' });
     }
     catch(error) {
         console.error(error);
