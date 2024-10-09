@@ -35,6 +35,11 @@ exports.registerUser = async (req, res) => {
             return res.status(400).json({ message: 'Username Taken, please select other username' });
         }
 
+        const existingUserEmail = await User.findOne({where: { username }});
+        if (existingUserEmail) {
+            return res.status(400).json({ message: 'Email Taken, please select other username' });
+        }
+
         const newUser = await User.create({ username, email, password: hashedPassword, role });
 
         return res.status(201).json({ message: 'User registered successfully' });
@@ -250,7 +255,7 @@ exports.deleteMember = async (req, res) => {
 exports.updateSelf = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { username, email } = req.body;
+        const { username, email, password } = req.body;
 
         const user = await User.findByPk(userId);
         if (!user) {
@@ -258,14 +263,27 @@ exports.updateSelf = async (req, res) => {
         }
 
         if (username) {
+            const existUsername = await User.findOne({ where: { username }});
+            if(existUsername) return res.status(400).json({message: "Username already taken"});
+
             user.username = username;
         }
         if (email) {
+            const existEmail = await User.findOne({ where: { email }});
+            if(existEmail) return res.status(400).json({message: "Email already taken"});
+
             user.email = email;
         }
 
+        if(password){
+            const hashedPassword = await bcrypt.hash(password, 10);
+            user.password = hashedPassword;
+        }
+
         await user.save();
-        return res.status(200).json({ message: 'User updated successfully', user });
+        const userData = user.get({ plain: true });
+        delete userData.password;
+        return res.status(200).json({ message: 'User updated successfully', userData });
     }
     catch (error) {
         console.error(error);
